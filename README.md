@@ -1,7 +1,7 @@
 # Olist E-Commerce Analytics — SQL + Python
 
 > End-to-end business analytics on a real Brazilian e-commerce dataset.
-> 15 business questions across 3 difficulty levels, answered with SQL and visualized with Python.
+> 30 business questions across 3 difficulty levels, answered with SQL and visualized with Python.
 
 ---
 
@@ -29,9 +29,9 @@
 ```
 olist-ecommerce-analytics/
 ├── sql/
-│   ├── 01_basic.sql          # Q1–Q5   — GROUP BY, JOIN, aggregation
-│   ├── 02_intermediate.sql   # Q6–Q10  — CTE, window functions, date ops
-│   └── 03_advanced.sql       # Q11–Q15 — RFM, cohort, composite scoring
+│   ├── 01_basic.sql          # Q1–Q10  — GROUP BY, JOIN, DISTINCT, subquery, UNION
+│   ├── 02_intermediate.sql   # Q11–Q20 — CTE, window functions, ROW_NUMBER, LEAD, moving avg
+│   └── 03_advanced.sql       # Q21–Q30 — RFM, cohort, duplicate detection, gaps & islands, CLV
 ├── notebooks/
 │   ├── 00_setup.ipynb        # Download data + build SQLite DB
 │   ├── 01_basic_analysis.ipynb
@@ -44,37 +44,52 @@ olist-ecommerce-analytics/
 
 ---
 
-## 15 Business Questions
+## 30 Business Questions
 
-### Basic — `GROUP BY · JOIN · CASE WHEN · AVG`
+### Basic — `GROUP BY · JOIN · DISTINCT · LEFT JOIN · HAVING · Subquery · UNION`
 
-| # | Business Question | Key Finding |
+| # | Business Question | SQL Concept |
 |---|-------------------|-------------|
-| Q1 | What are the top product categories by order volume? | |
-| Q2 | What is the distribution of order statuses? | |
-| Q3 | Which Brazilian states have the most customers? | |
-| Q4 | How does average order value vary by payment type? | |
-| Q5 | Which categories have the highest customer review scores? | |
+| Q1 | What are the top product categories by order volume? | `GROUP BY`, `ORDER BY` |
+| Q2 | What is the distribution of order statuses? | `GROUP BY`, window `COUNT` |
+| Q3 | Which Brazilian states have the most customers? | `COUNT DISTINCT`, `GROUP BY` |
+| Q4 | How does average order value vary by payment type? | `AVG`, `SUM`, `GROUP BY` |
+| Q5 | Which categories have the highest customer review scores? | Multi-table `JOIN`, `HAVING` |
+| Q6 | How many customers are repeat buyers? | `DISTINCT` + scalar subquery |
+| Q7 | What percentage of orders are missing a review? | `LEFT JOIN`, `NULL` check |
+| Q8 | Which categories have both high volume AND high satisfaction? | `HAVING` with multiple conditions |
+| Q9 | Which products are priced above their category average? | Correlated subquery |
+| Q10 | Which states appear as both customer and seller locations? | `UNION ALL`, `IN` subquery |
 
-### Intermediate — `CTE · WINDOW FUNCTIONS · DATE · NTILE`
+### Intermediate — `CTE · RANK · DENSE_RANK · ROW_NUMBER · LEAD · Cumulative Sum · Moving Average`
 
-| # | Business Question | Key Finding |
+| # | Business Question | SQL Concept |
 |---|-------------------|-------------|
-| Q6 | What does monthly revenue look like — best and worst months? | |
-| Q7 | How does actual delivery time compare to estimated? | |
-| Q8 | What are the top 3 best-selling products in each category? | |
-| Q9 | Do the top 10% of sellers drive a disproportionate share of revenue? | |
-| Q10 | Do customers order more on weekdays or weekends? | |
+| Q11 | What does monthly revenue look like — best and worst months? | `CTE`, `RANK()` |
+| Q12 | How does actual delivery time compare to estimated? | `JULIANDAY`, `CASE WHEN` |
+| Q13 | What are the top 3 best-selling products in each category? | `RANK()`, `PARTITION BY` |
+| Q14 | Do the top 10% of sellers drive a disproportionate share of revenue? | `NTILE()`, `CTE` |
+| Q15 | Do customers order more on weekdays or weekends? | `STRFTIME`, window `COUNT` |
+| Q16 | What is the first order for each customer? (deduplication) | `ROW_NUMBER()` |
+| Q17 | What is the difference between RANK and DENSE_RANK? | `RANK()` vs `DENSE_RANK()` |
+| Q18 | What does cumulative revenue look like over time? | `SUM() OVER (ORDER BY)` |
+| Q19 | How does each month's revenue compare to the next month? | `LEAD()` |
+| Q20 | What is the 3-month moving average of order volume? | `AVG() OVER (ROWS BETWEEN)` |
 
-### Advanced — `RFM · Cohort · Statistical Testing · LAG()`
+### Advanced — `RFM · Cohort · Gaps & Islands · YoY · Pivot · CLV · Duplicate Detection`
 
-| # | Business Question | Key Finding |
+| # | Business Question | SQL Concept |
 |---|-------------------|-------------|
-| Q11 | How can we segment customers using RFM scoring? | |
-| Q12 | What does customer retention look like across monthly cohorts? | |
-| Q13 | Does late delivery have a statistically significant impact on review scores? | |
-| Q14 | How can we rank sellers using a composite performance score? | |
-| Q15 | Which product categories show the strongest month-over-month revenue growth? | |
+| Q21 | How can we segment customers using RFM scoring? | `CTE` chain, `NTILE`, `CASE WHEN` |
+| Q22 | What does customer retention look like across monthly cohorts? | Cohort `CTE`, `JOIN` |
+| Q23 | Does late delivery significantly impact review scores? | `CASE WHEN`, Python t-test |
+| Q24 | How can we rank sellers using a composite performance score? | `NTILE`, weighted scoring |
+| Q25 | Which product categories show the strongest MoM revenue growth? | `LAG()`, `PARTITION BY` |
+| Q26 | Which orders have duplicate reviews? How do we clean them? | `ROW_NUMBER` deduplication |
+| Q27 | Which customers churned (60+ day gap) and came back? | Gaps & Islands, `LAG()` |
+| Q28 | What is the year-over-year revenue growth by category? | `LAG()`, YoY pattern |
+| Q29 | How does payment method usage break down by month? (pivot) | Conditional aggregation, `CASE` pivot |
+| Q30 | Who are the highest-value customers by lifetime value score? | Multi-CTE, CLV, `NTILE` |
 
 ---
 
@@ -82,16 +97,29 @@ olist-ecommerce-analytics/
 
 | Technique | Questions |
 |-----------|-----------|
-| `GROUP BY` + `ORDER BY` | Q1, Q2, Q3, Q4, Q5 |
-| Multi-table `JOIN` | Q1, Q5, Q7 |
-| `CASE WHEN` | Q2, Q10, Q11, Q13 |
-| `CTE` (Common Table Expressions) | Q6, Q9, Q11, Q12, Q13, Q14, Q15 |
-| `RANK()` window function | Q6, Q8 |
-| `NTILE()` window function | Q9, Q11, Q14 |
-| `LAG()` window function | Q15 |
-| `JULIANDAY()` date arithmetic | Q7, Q12, Q14 |
-| `STRFTIME()` date formatting | Q6, Q10, Q12, Q15 |
-| Statistical significance test (Python) | Q13 |
+| `GROUP BY` + `ORDER BY` + `HAVING` | Q1–Q5, Q8 |
+| Multi-table `JOIN` | Q1, Q5, Q12, Q21–Q25 |
+| `LEFT JOIN` + `NULL` check | Q7 |
+| `DISTINCT` | Q3, Q6 |
+| Scalar / correlated subquery | Q6, Q9, Q10 |
+| `UNION` / `UNION ALL` | Q10 |
+| `CASE WHEN` | Q2, Q15, Q23, Q29 |
+| `CTE` (Common Table Expressions) | Q11, Q14, Q16–Q30 |
+| `RANK()` | Q11, Q13 |
+| `DENSE_RANK()` | Q17 |
+| `ROW_NUMBER()` | Q16, Q26 |
+| `NTILE()` | Q14, Q21, Q24, Q30 |
+| `LAG()` | Q25, Q27, Q28 |
+| `LEAD()` | Q19 |
+| `SUM() OVER` (cumulative) | Q18 |
+| `AVG() OVER ROWS BETWEEN` (moving avg) | Q20 |
+| `JULIANDAY()` date arithmetic | Q12, Q22, Q27, Q30 |
+| `STRFTIME()` date formatting | Q11, Q15, Q22, Q25 |
+| Conditional aggregation (SQL pivot) | Q29 |
+| Gaps & Islands pattern | Q27 |
+| YoY comparison pattern | Q28 |
+| Customer Lifetime Value | Q30 |
+| Statistical significance test (Python) | Q23 |
 
 ---
 
@@ -138,21 +166,23 @@ jupyter notebook notebooks/01_basic_analysis.ipynb
 - **Seller concentration:** Top 10% of sellers generate **67.6% of total revenue** (strong Pareto effect)
 - **Weekend orders:** 23% of all orders are placed on weekends vs 77% on weekdays
 - **RFM segmentation:** 14,311 Champions identified vs 3,697 Lost customers
-- **Late delivery impact:** Statistically significant effect on reviews — On Time avg: **4.29** vs Late avg: **2.57** (p < 0.0001)
-- **Fastest growing category:** `fashion_bags_accessories` showed +15,239% MoM growth in Jan 2017
+- **Late delivery impact:** Statistically significant — On Time avg: **4.29** vs Late avg: **2.57** (p < 0.0001)
+- **Fastest growing category:** `fashion_bags_accessories` +15,239% MoM growth in Jan 2017
+
+---
 
 ## Sample Visualizations
 
-### Q6 — Monthly Revenue Trend
+### Monthly Revenue Trend (Q11)
 ![Monthly Revenue](images/q6_monthly_revenue.png)
 
-### Q11 — RFM Customer Segmentation
+### RFM Customer Segmentation (Q21)
 ![RFM Segmentation](images/q11_rfm_segmentation.png)
 
-### Q12 — Cohort Retention Heatmap
+### Cohort Retention Heatmap (Q22)
 ![Cohort Retention](images/q12_cohort_retention.png)
 
-### Q13 — Late Delivery Impact on Review Scores
+### Late Delivery Impact on Review Scores (Q23)
 ![Delivery vs Score](images/q13_delivery_vs_score.png)
 
 ---
