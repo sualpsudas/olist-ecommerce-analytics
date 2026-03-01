@@ -3,6 +3,8 @@ data/
 *.csv
 *.db
 run_analysis.py
+build_notebooks.py
+run_new_charts.py
 
 # Python
 __pycache__/
