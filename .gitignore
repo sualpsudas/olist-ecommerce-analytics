@@ -2,6 +2,7 @@
 data/
 *.csv
 *.db
+run_analysis.py
 
 # Python
 __pycache__/

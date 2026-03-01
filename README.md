@@ -130,13 +130,30 @@ jupyter notebook notebooks/01_basic_analysis.ipynb
 
 ## Key Insights
 
-> *(This section will be populated after running the notebooks)*
+- **Top category:** `bed_bath_table` leads with the highest order volume across all categories
+- **Order fulfillment:** 96.5% of orders are successfully delivered
+- **Revenue peak:** November 2017 was the best month ($1,153,528) — likely Black Friday effect
+- **Delivery performance:** Orders arrive **11.2 days earlier** than estimated on average (actual: 12.6d vs estimated: 23.7d)
+- **Payment preference:** Credit card dominates both in volume and total revenue
+- **Seller concentration:** Top 10% of sellers generate **67.6% of total revenue** (strong Pareto effect)
+- **Weekend orders:** 23% of all orders are placed on weekends vs 77% on weekdays
+- **RFM segmentation:** 14,311 Champions identified vs 3,697 Lost customers
+- **Late delivery impact:** Statistically significant effect on reviews — On Time avg: **4.29** vs Late avg: **2.57** (p < 0.0001)
+- **Fastest growing category:** `fashion_bags_accessories` showed +15,239% MoM growth in Jan 2017
 
-- **Top categories:** ...
-- **Revenue trend:** ...
-- **Delivery performance:** ...
-- **RFM segments:** ...
-- **Late delivery impact:** statistically significant (p < 0.05)
+## Sample Visualizations
+
+### Q6 — Monthly Revenue Trend
+![Monthly Revenue](images/q6_monthly_revenue.png)
+
+### Q11 — RFM Customer Segmentation
+![RFM Segmentation](images/q11_rfm_segmentation.png)
+
+### Q12 — Cohort Retention Heatmap
+![Cohort Retention](images/q12_cohort_retention.png)
+
+### Q13 — Late Delivery Impact on Review Scores
+![Delivery vs Score](images/q13_delivery_vs_score.png)
 
 ---
 
