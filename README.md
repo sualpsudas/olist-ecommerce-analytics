@@ -106,6 +106,18 @@ olist-ecommerce-analytics/
 | ![Q8](images/q8_high_vol_high_sat.png) | ![Q6](images/q6_repeat_buyers.png) |
 | **Q8** — Only 21 categories have both high volume AND high scores | **Q6** — Just 3.1% of customers placed more than one order |
 
+**Key insights:**
+- **Q1** — Bed & bath leads on volume, but don't confuse volume with value — electronics has fewer orders yet a much higher average ticket price.
+- **Q2** — 97% delivery success rate; the 0.6% cancellation rate skews toward boleto payments that expire before fulfilment.
+- **Q3** — São Paulo alone accounts for ~42% of all customers. The top 3 states (SP, RJ, MG) cover ~66% of total demand.
+- **Q4** — Credit card orders average R$163 — 2.5× more than voucher orders (R$66). Brazilian installment payments (parcelamento) unlock larger purchases on credit.
+- **Q5** — Commodity categories (books, tools) consistently outscore fashion and electronics. Expectation mismatch — not product quality — is the main driver of low ratings.
+- **Q6** — Only ~3% of customers ever place a second order. Repeat purchase rate is the single most important growth lever the platform hasn't cracked.
+- **Q7** — Just 0.8% of orders are missing a review — Olist's automated request emails are unusually effective.
+- **Q8** — Very few categories land in the top quartile for both volume *and* satisfaction. That intersection is the sweet spot for marketplace expansion.
+- **Q9** — Products priced 2× their category average aren't necessarily overpriced — they often serve a niche. Low score + high price is the flag to investigate.
+- **Q10** — SP, RJ, MG dominate both buyer and seller rankings. Geographic concentration creates efficiency but also fragility — disruptions in SP hit both supply and demand.
+
 ---
 
 ### Intermediate Analysis
@@ -119,6 +131,18 @@ olist-ecommerce-analytics/
 | ![Q19](images/q19_lead_mom_change.png) | ![Q14](images/q9_seller_concentration.png) |
 | **Q19** — Month-on-month expected change using LEAD() | **Q14** — Top 10% of sellers generate 67.6% of all revenue |
 
+**Key insights:**
+- **Q11** — November 2017 is the single highest revenue month (R$1.15M) — Black Friday. Seasonality is predictable: Q4 spikes, Q1 dips.
+- **Q12** — ~8% of orders arrive later than estimated. Those late orders average a score of **2.57** vs **4.29** for on-time — a 1.7-point gap on a 5-point scale.
+- **Q13** — Within most categories, the top 3 products capture a disproportionate share of orders. A handful of SKUs drive most category revenue.
+- **Q14** — The top 10% of sellers (just ~310 out of 3,095) generate **67.6% of total revenue** — more extreme than the classic 80/20 rule. Losing a few top sellers has outsized consequences.
+- **Q15** — 77% of orders are placed on weekdays, peaking at lunchtime and early evening. Direct implications for ad scheduling and support staffing.
+- **Q16** — ROW_NUMBER() deduplication is one of the most common SQL interview patterns. In Olist, customer_id and customer_unique_id can diverge — always clarify grain before aggregating.
+- **Q17** — RANK() leaves gaps after ties (1, 2, 2, 4); DENSE_RANK() doesn't (1, 2, 2, 3). Use DENSE_RANK() for top-N labelling; RANK() when position should reflect how many records scored higher.
+- **Q18** — The cumulative revenue curve accelerates through 2017 and starts flattening in early 2018 — visible evidence of growth phase followed by market maturation.
+- **Q19** — LEAD() compares each row to its successor without a self-join. November's spike makes December's MoM look negative even though December was a healthy month in absolute terms.
+- **Q20** — A 3-month moving average smooths out seasonal spikes and makes the underlying trend visible. The right window balances responsiveness with smoothness.
+
 ---
 
 ### Advanced Analysis
@@ -131,6 +155,18 @@ olist-ecommerce-analytics/
 | **Q23** — Late delivery cuts avg score from 4.29 → 2.57 (p < 0.0001) | **Q27** — Gaps & Islands: 1,192 purchase gaps over 60 days detected |
 | ![Q29](images/q29_payment_pivot.png) | ![Q30](images/q30_clv_quartiles.png) |
 | **Q29** — SQL pivot: credit card usage grows consistently month over month | **Q30** — CLV quartiles: top 25% of repeat customers are worth 3× more |
+
+**Key insights:**
+- **Q21** — Most customers land in the low-R, low-F, low-M bucket — bought once, a while ago, spent little. The Champions segment is small but drives outsized revenue. RFM tells you *where* to focus retention spend.
+- **Q22** — Month-2 retention is under 5%. Cohort analysis makes this visible in a way aggregate metrics hide — overall order volume can look healthy even as retention deteriorates.
+- **Q23** — Late deliveries generate a disproportionate share of 1-star reviews. Fixing the 8.1% of late orders is the **highest-ROI lever** for improving the overall platform rating.
+- **Q24** — A composite score (volume + satisfaction + speed) surfaces sellers that excel across all dimensions. Top composite scorers are candidates for premium placement; bottom scorers for intervention.
+- **Q25** — Category-level MoM growth separates seasonal spikes from structural acceleration. Categories with *consistent* positive MoM growth are the ones worth expanding seller supply in.
+- **Q26** — In payment data, the same order_id intentionally has multiple rows (installments). Always understand *why* duplicates exist before removing them.
+- **Q27** — True customer reactivation after a 60+ day gap is rare on Olist, confirming the low repeat-purchase rate from Q6. The Gaps & Islands pattern is reusable for any inactive-then-active detection problem.
+- **Q28** — 2017 vs 2016 YoY growth looks enormous because 2016 covers only H2 — the platform was newer. 2018 data is truncated at mid-year. Always validate date range completeness before reporting YoY figures.
+- **Q29** — Credit card consistently represents 70%+ of monthly payment volume. Conditional aggregation (CASE WHEN inside SUM/COUNT) is more portable than database-specific PIVOT syntax.
+- **Q30** — The top CLV quartile averages R$382 vs R$43 for the bottom — a 9× gap. CLV scoring lets you prioritise who gets discounts or win-back campaigns rather than spending retention budget uniformly.
 
 ---
 
